@@ -1,3 +1,8 @@
+### offline fork of ofxPiMapper
+to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features
+also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).
+
+
 # ofxPiMapper
 
 [![Join the chat at https://gitter.im/kr15h/ofxPiMapper](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kr15h/ofxPiMapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/kr15h/ofxPiMapper.svg?branch=master)](https://travis-ci.org/kr15h/ofxPiMapper) [![Build status](https://ci.appveyor.com/api/projects/status/j6mn85tt2agk4dk6?svg=true)](https://ci.appveyor.com/project/kr15h/ofxpimapper)
@@ -195,7 +200,7 @@ After you select a surface in surface editing mode, activate this mode to be abl
 
 ### Other shortcuts
 
-These other shortcuts that you can use while using the example app. 
+These other shortcuts that you can use while using the example app in this modified PVJ version. 
 
 Key | Function
 :--- | :---
@@ -208,29 +213,37 @@ t | Add triangle surface
 q | Add quad surface
 g | Add grid warp surface
 c | Add circle surface
-d | duplicate selected surface
+a | duplicate selected surface
 \+ | Scale surface up
 \- | Scale surface down
 p | toggle perspective warping (quad surfaces only)
-] | add columns to grid surface (grid warp surfaces only)
-[ | remove columns from grid surface (grid warp surfaces only)
-} | add rows to grid surface (grid warp surfaces only)
-{ | remove rows from grid surface (grid warp surfaces only)
+v | add columns to grid surface (grid warp surfaces only)
+b | remove columns from grid surface (grid warp surfaces only)
+n | add rows to grid surface (grid warp surfaces only)
+m | remove rows from grid surface (grid warp surfaces only)
 . | select next surface (projection mapping mode only)
-, | select previous surface (projection mapping mode only)
-\> | select next vertex
-\< | select previous vertex
-0 | Move selected surface one layer up
-9 | Move selected surface one layer down
+/ | select previous surface (projection mapping mode only)
+k | select next vertex
+l | select previous vertex
+h | Move selected surface one layer up
+j | Move selected surface one layer down
 s | Save composition
-l | Hide/show layer panel
+y | Hide/show layer panel
 z | Undo
+
 rbt | Reboot (Raspberry Pi only)
 sdn | Shutdown (Raspberry Pi only)
 new | Clear composition (remove all surfaces)
 ext | Exit application and return to command line
-BACKSPACE ('\' via SSH) | Delete surface.
-SPACE | Toggle pause for video sources (texture and projection mapping modes)
-TAB | Select next source (no need to use the source selection interface)
-Arrow keys | Move selection. If no surface is selected in the projection mapping mode, all surfaces are moved.
+
+d | Delete surface.
+w | Toggle pause for video sources (texture and projection mapping modes)
+5 | Select next source (no need to use the source selection interface)
+8 | Move selection up
+9 | Move selection down
+7 | Move selection left
+0 | Move selection right
+
+
+
 \/ | Toggle 1px/10px steps for keyboard moves on Raspberry Pi
