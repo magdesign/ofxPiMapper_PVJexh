@@ -1,6 +1,7 @@
 ### offline fork of ofxPiMapper
-to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features
-also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).
+to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features <p/>
+made offline to be able to use the search function, when all the functions are working I will make a propper fork and open a pull request<p/>
+also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).<p/>
 
 
 # ofxPiMapper
