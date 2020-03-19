@@ -1,3 +1,8 @@
+### offline fork of ofxPiMapper
+to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features
+also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).
+
+
 # ofxPiMapper
 
 [![Join the chat at https://gitter.im/kr15h/ofxPiMapper](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kr15h/ofxPiMapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/kr15h/ofxPiMapper.svg?branch=master)](https://travis-ci.org/kr15h/ofxPiMapper) [![Build status](https://ci.appveyor.com/api/projects/status/j6mn85tt2agk4dk6?svg=true)](https://ci.appveyor.com/project/kr15h/ofxpimapper)
@@ -194,7 +199,7 @@ After you select a surface in surface editing mode, activate this mode to be abl
 
 
 ### Other shortcuts
-
+(needs to be updated to list PVJ shortcuts).
 These other shortcuts that you can use while using the example app. 
 
 Key | Function
