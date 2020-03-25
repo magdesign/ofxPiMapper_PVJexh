@@ -55,7 +55,7 @@ void ProjectionMappingMode::toggleLayerPanel(){
 
 void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & args){
 	switch(args.key){
-
+			
 	 case 't':
 		 app->createSurface(SurfaceType::TRIANGLE_SURFACE);
 		 break;
@@ -63,20 +63,20 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 	 case 'q':
 		 app->createSurface(SurfaceType::QUAD_SURFACE);
 		 break;
-
+			
 	 case 'g':
 		 app->createSurface(SurfaceType::GRID_WARP_SURFACE);
 		 break;
-
-	 //case 'x':
-	//	 app->createSurface(SurfaceType::HEXAGON_SURFACE);
-	//	 break;
+		
+	 case 'h':
+		 app->createSurface(SurfaceType::HEXAGON_SURFACE);
+		 break;
 			
-	 case 'r':
+	 case 'c':
 		app->createSurface(SurfaceType::CIRCLE_SURFACE);
 		break;
 
-	 case 'd':
+	 case OF_KEY_BACKSPACE:
 		 app->eraseSurface(app->getSurfaceManager()->getSelectedSurfaceIndex());
 		 break;
 	 
@@ -84,21 +84,21 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 app->togglePerspective();
 		 break;
 	 
-	 //case 'n':
-	//	 app->addGridRow();
-	//	 break;
+	 case '}':
+		 app->addGridRow();
+		 break;
 	
-	 case 'm':
+	 case '{':
 		 app->removeGridRow();
 		 break;
 	 
-	 //case 'v':
-	//	 app->addGridColumn();
-	//	 break;
+	 case ']':
+		 app->addGridColumn();
+		 break;
 			
-	 //case 'b':
-	//	 app->removeGridColumn();
-	//	 break;
+	 case '[':
+		 app->removeGridColumn();
+		 break;
 			
 	 case '.':
 		 app->selectNextSurface();
@@ -108,77 +108,75 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 app->selectPrevSurface();
 		 break;
 			
-	 case 'k':
+	 case '>':
 		 app->selectNextVertex();
 		 break;
 	 
-	 case 'l':
+	 case '<':
 		 app->selectPrevVertex();
 		 break;
 	 
-	 case '8':
-		 app->moveSelection(Vec3(0.0f, -1.0f, 0.0f));
+	 case OF_KEY_UP:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(0.0f, -10.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(0.0f, -1.0f, 0.0f));
+		 }
 		 break;
-
-	 case 'x':
-            app->moveSelection(Vec3(0.0f, -10.0f, 0.0f));
-		break;
-
-	 case '9':
-		 app->moveSelection(Vec3(0.0f, 1.0f, 0.0f));
+			
+	 case OF_KEY_DOWN:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(0.0f, 10.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(0.0f, 1.0f, 0.0f));
+		 }
 		 break;
-
-  	 case 'b':
-           app->moveSelection(Vec3(0.0f, 10.0f, 0.0f));
-            break;
-
-
-	case '7':
-           app->moveSelection(Vec3(-1.0f, 0.0f, 0.0f));
-           break;
-
-	 case 'v':
-		app->moveSelection(Vec3(-10.0f, 0.0f, 0.0f));
+			
+	 case OF_KEY_LEFT:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(-10.0f, 0.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(-1.0f, 0.0f, 0.0f));
+		 }
 		 break;
-
-	 case '0':
-                 app->moveSelection(Vec3(1.0f, 0.0f, 0.0f));
-                 break;
-
-
-	 case 'n':
-		app->moveSelection(Vec3(10.0f, 0.0f, 0.0f));
+	 
+	 case OF_KEY_RIGHT:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(10.0f, 0.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(1.0f, 0.0f, 0.0f));
+		 }
 		 break;
-
-	 case 'w':
+			
+	 case ' ':
 		 app->togglePause();
 		 break;
 			
-	 case '5':
+	 case OF_KEY_TAB:
 		 app->setNextSource();
 		 break;
 	
-	 case 'a':
+	 case 'd':
 		 app->duplicateSurface();
 		 break;
 			
-	 case 'h': // Move selected surface up the layer stack
+	 case '0': // Move selected surface up the layer stack
 		 app->moveLayerUp();
 		 break;
 		
-	 case 'j': // Move selected surface down the layer stack
+	 case '9': // Move selected surface down the layer stack
 		 app->moveLayerDown();
 		 break;
 			
-	 case 'o': // Scale surface up
+	 case '+': // Scale surface up
 		 app->scaleUp();
 		 break;
 
-	 case 'i': // Scale surface down
+	 case '-': // Scale surface down
 		 app->scaleDown();
 		 break;
 
-	 case 'y':
+	 case 'l':
 		 toggleLayerPanel();
 		 break;
 

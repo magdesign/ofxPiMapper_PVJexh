@@ -128,7 +128,7 @@ void Application::onKeyPressed(ofKeyEventArgs & args){
 		 setSourceMode();
 		 break;
 
-	 case 'c':
+	 case 'i':
 		 toggleInfo();
 		 break;
 
@@ -143,6 +143,10 @@ void Application::onKeyPressed(ofKeyEventArgs & args){
 	 case 'f':
 		 setNextPreset();
 		 break;
+
+    case 'F':
+        setFullscreenSurface();
+        break;
 
 	 default:
 		 // All the other keypresses are handled by the application state onKeyPressed
@@ -463,6 +467,13 @@ void Application::duplicateSurface(){
 		  getSurfaceManager()->getSelectedSurface(),
 		  getSurfaceManager()));
 	}
+}
+
+void Application::setFullscreenSurface(){
+    if(getSurfaceManager()->getSelectedSurface() != 0){
+        getCmdManager()->exec(
+         new FullscreenSurfaceCmd(getSurfaceManager()->getSelectedSurface()));
+    }
 }
 
 void Application::setNextSource(){
