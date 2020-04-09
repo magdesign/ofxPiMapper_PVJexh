@@ -55,7 +55,7 @@ void ProjectionMappingMode::toggleLayerPanel(){
 
 void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & args){
 	switch(args.key){
-
+			
 	 case 't':
 		 app->createSurface(SurfaceType::TRIANGLE_SURFACE);
 		 break;
@@ -63,20 +63,20 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 	 case 'q':
 		 app->createSurface(SurfaceType::QUAD_SURFACE);
 		 break;
-
+			
 	 case 'g':
 		 app->createSurface(SurfaceType::GRID_WARP_SURFACE);
 		 break;
-
-	 //case 'x':
-	//	 app->createSurface(SurfaceType::HEXAGON_SURFACE);
-	//	 break;
+		
+	 case 'h':
+		 app->createSurface(SurfaceType::HEXAGON_SURFACE);
+		 break;
 			
-	 case 'r':
+	 case 'c':
 		app->createSurface(SurfaceType::CIRCLE_SURFACE);
 		break;
 
-	 case 'd':
+	 case OF_KEY_BACKSPACE:
 		 app->eraseSurface(app->getSurfaceManager()->getSelectedSurfaceIndex());
 		 break;
 	 
@@ -84,21 +84,21 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 app->togglePerspective();
 		 break;
 	 
-	 //case 'n':
-	//	 app->addGridRow();
-	//	 break;
+	 case '}':
+		 app->addGridRow();
+		 break;
 	
-	 case 'm':
+	 case '{':
 		 app->removeGridRow();
 		 break;
 	 
-	 //case 'v':
-	//	 app->addGridColumn();
-	//	 break;
+	 case ']':
+		 app->addGridColumn();
+		 break;
 			
-	 //case 'b':
-	//	 app->removeGridColumn();
-	//	 break;
+	 case '[':
+		 app->removeGridColumn();
+		 break;
 			
 	 case '.':
 		 app->selectNextSurface();
@@ -108,79 +108,81 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 app->selectPrevSurface();
 		 break;
 			
-	 case 'k':
+	 case '>':
 		 app->selectNextVertex();
 		 break;
 	 
-	 case 'l':
+	 case '<':
 		 app->selectPrevVertex();
 		 break;
 	 
-	 case '8':
-		 app->moveSelection(Vec3(0.0f, -1.0f, 0.0f));
+	 case OF_KEY_UP:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(0.0f, -10.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(0.0f, -1.0f, 0.0f));
+		 }
 		 break;
-
-	 case 'x':
-            app->moveSelection(Vec3(0.0f, -10.0f, 0.0f));
-		break;
-
-	 case '9':
-		 app->moveSelection(Vec3(0.0f, 1.0f, 0.0f));
+			
+	 case OF_KEY_DOWN:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(0.0f, 10.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(0.0f, 1.0f, 0.0f));
+		 }
 		 break;
-
-  	 case 'b':
-           app->moveSelection(Vec3(0.0f, 10.0f, 0.0f));
-            break;
-
-
-	case '7':
-           app->moveSelection(Vec3(-1.0f, 0.0f, 0.0f));
-           break;
-
-	 case 'v':
-		app->moveSelection(Vec3(-10.0f, 0.0f, 0.0f));
+			
+	 case OF_KEY_LEFT:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(-10.0f, 0.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(-1.0f, 0.0f, 0.0f));
+		 }
 		 break;
-
-	 case '0':
-                 app->moveSelection(Vec3(1.0f, 0.0f, 0.0f));
-                 break;
-
-
-	 case 'n':
-		app->moveSelection(Vec3(10.0f, 0.0f, 0.0f));
+	 
+	 case OF_KEY_RIGHT:
+		 if(app->isShiftKeyDown()){
+			app->moveSelection(Vec3(10.0f, 0.0f, 0.0f));
+		 }else{
+			app->moveSelection(Vec3(1.0f, 0.0f, 0.0f));
+		 }
 		 break;
-
-	 case 'w':
+			
+	 case ' ':
 		 app->togglePause();
 		 break;
 			
-	 case '5':
+	 case OF_KEY_TAB:
 		 app->setNextSource();
 		 break;
 	
-	 case 'a':
+	 case 'd':
 		 app->duplicateSurface();
 		 break;
 			
-	 case 'h': // Move selected surface up the layer stack
+	 case '0': // Move selected surface up the layer stack
 		 app->moveLayerUp();
 		 break;
 		
-	 case 'j': // Move selected surface down the layer stack
+	 case '9': // Move selected surface down the layer stack
 		 app->moveLayerDown();
 		 break;
 			
-	 case 'o': // Scale surface up
+	 case '+': // Scale surface up
 		 app->scaleUp();
 		 break;
 
-	 case 'i': // Scale surface down
+	 case '-': // Scale surface down
 		 app->scaleDown();
 		 break;
 
-	 case 'y':
+	 case 'l':
 		 toggleLayerPanel();
 		 break;
+
+     case 'e':
+         Gui::instance()->getProjectionEditorWidget().toggleEdgeBlend();
+       break;
 
 	/*
 	 case 'n': // Set next preset
@@ -197,19 +199,28 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 	Gui::instance()->onMousePressed(args);
 	
 	CircleJoint * hitJoint = 0;
+    EdgeBlendJoint * hitEdgeBlendJoint = 0;
 	int hitJointIndex = -1;
 	BaseSurface * hitSurface = 0;
 
 	hitJoint = Gui::instance()->getProjectionEditorWidget().hitTestJoints(Vec2(args.x, args.y));
+    hitEdgeBlendJoint = Gui::instance()->getProjectionEditorWidget().hitTestEdgeBlendJoints(Vec2(args.x, args.y));
 	
-	if(hitJoint){
+    if(hitJoint){
 		for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
 			if((*Gui::instance()->getProjectionEditorWidget().getJoints())[i] == hitJoint){
 				hitJointIndex = i;
 				break;
 			}
 		}
-	}else{
+    }else if(hitEdgeBlendJoint) {
+        for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
+            if((*Gui::instance()->getProjectionEditorWidget().getEdgeBlendJoints())[i] == hitEdgeBlendJoint){
+                hitJointIndex = i;
+                break;
+            }
+        }
+    }else{
 		for(int i = app->getSurfaceManager()->size() - 1; i >= 0; --i){
 			if(app->getSurfaceManager()->getSurface(i)->hitTest(Vec2(args.x, args.y))){
 				hitSurface = app->getSurfaceManager()->getSurface(i);
@@ -224,6 +235,10 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 		hitJoint->select();
 		hitJoint->startDrag();
 		Gui::instance()->notifyJointPressed(args, hitJointIndex);
+    }else if(hitEdgeBlendJoint){
+        hitEdgeBlendJoint->select();
+        hitEdgeBlendJoint->startDrag();
+        Gui::instance()->notifyEdgeBlendJointPressed(args, hitJointIndex);
 	}else if(hitSurface){
 		_clickPosition = Vec2(args.x, args.y); // TODO: redesign this so we can use a kind of
 												  //       display stack.
@@ -261,6 +276,14 @@ void ProjectionMappingMode::onJointPressed(Application * app, GuiJointEvent & e)
 	app->getCmdManager()->exec(new MvSurfaceVertCmd(
 		e.jointIndex,
 		app->getSurfaceManager()->getSelectedSurface()));
+}
+
+void ProjectionMappingMode::onEdgeBlendJointPressed(Application * app, GuiJointEvent & e){
+    //app->getCmdManager()->exec(new SelEdgeBlendJointCmd(&(Gui::instance()->getProjectionEditorWidget()), e.jointIndex));
+    //cout << " selected joint: " <<  Gui::instance()->getProjectionEditorWidget().getSelectedEdgeBlendJoint() << endl;
+    app->getCmdManager()->exec(new MvSurfaceEdgeBlendJointCmd(
+        e.jointIndex,
+        &(Gui::instance()->getProjectionEditorWidget()) ));
 }
 
 void ProjectionMappingMode::onSurfacePressed(Application * app, GuiSurfaceEvent & e){
