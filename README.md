@@ -1,8 +1,14 @@
-### offline fork of ofxPiMapper
+# offline fork of ofxPiMapper
 to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features <p/>
 made offline to be able to use the search function, when all the functions are working I will make a propper fork and open a pull request<p/>
 also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).<p/>
 
+## Features
+
+- Fullscreen quad is working, see branch
+- Edge blend (under consturcion, is workin on Linux machines, but not Rpi yet)
+- Sync (several RPis with ofxPiMapper will share their timecode (boradcast, no IP entering!) to run in sync
+- USB Camera feed (supporting an Elgato stick, first we test if there is enough performance, stay tuned)
 
 # ofxPiMapper
 
