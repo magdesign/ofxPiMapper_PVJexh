@@ -1,3 +1,18 @@
+Based on code from Krisjanis Rijnieks https://github.com/kr15h/ofxPiMapper<p/>
+<p/>
+Additions made by Pierre Proske https://github.com/pierrep<p/>
+<p/>
+
+Development financed by https://sehnerv.org for the exhibition https://www.facinghistory.ch/en/ <p/>
+Association for the promotion of media art, Switzerland <p/>
+Initiated by Marc-André Gasser<p/>
+
+The official fork to contibute the code back to the official repo is here:<p/>
+https://github.com/pierrep/ofxPiMapper <p/>
+
+
+
+
 # offline fork of ofxPiMapper
 to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features <p/>
 made offline to be able to use the search function, when all the functions are working I will make a propper fork and open a pull request<p/>
