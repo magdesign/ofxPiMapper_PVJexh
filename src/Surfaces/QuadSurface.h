@@ -47,18 +47,29 @@ class QuadSurface : public BaseSurface {
 	private:
 		void calculateHomography();
         void setupShaders();
-
+        void setupVertexArray();
+        void updateVertexBuffer();
+        void calculateQ();
 
 		float _matrix[16];
 		bool _perspectiveWarping;
         bool _edgeBlendingMode;
 		ofMesh _meshCache;
-        ofShader edgeBlendShader;
-        string glESFragmentShader;
+        ofShader shader;
         string glESVertexShader;
+        string glESFragmentShader;
+        string gl3VertexShader;
+        string gl3FragmentShader;
         string gl2FragmentShader;
-        string gl2VertexShader;
-        ofVec4f edges;
+        ofVec4f edges;     
+
+        GLuint VBO, VAO;
+        float q0, q1, q2, q3;        
+
+        //GLES2 only
+        GLint v3PosAttributeIndex;
+        GLint v3TexAttributeIndex;
+
 };
 
 } // namespace piMapper
