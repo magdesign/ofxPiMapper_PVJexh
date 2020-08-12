@@ -2,20 +2,20 @@
     <surface type="1">
         <vertices>
             <vertex>
-                <x>554.000000000</x>
-                <y>182.000000000</y>
+                <x>92.946136475</x>
+                <y>158.088775635</y>
             </vertex>
             <vertex>
-                <x>1162.000000000</x>
-                <y>156.000000000</y>
+                <x>845.788269043</x>
+                <y>357.132598877</y>
             </vertex>
             <vertex>
-                <x>1422.000000000</x>
-                <y>1000.000000000</y>
+                <x>733.412719727</x>
+                <y>474.649322510</y>
             </vertex>
             <vertex>
-                <x>312.000000000</x>
-                <y>568.000000000</y>
+                <x>92.211883545</x>
+                <y>556.910949707</y>
             </vertex>
         </vertices>
         <texCoords>
@@ -37,8 +37,8 @@
             </texCoord>
         </texCoords>
         <source>
-            <source-type>video</source-type>
-            <source-name>wifisync.mp4</source-name>
+            <source-type>image</source-type>
+            <source-name>gene-nsynthesis-image-d.jpg</source-name>
         </source>
         <properties>
             <perspectiveWarping>1</perspectiveWarping>

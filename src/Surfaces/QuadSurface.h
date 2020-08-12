@@ -26,6 +26,7 @@ class QuadSurface : public BaseSurface {
 		void setTexCoord(int index, Vec2 t);
 		void setTexCoords(std::vector<Vec2> t);
 		void moveBy(Vec3 v);
+        void fullScreen();
 
 		int getType();
 		bool hitTest(Vec2 p);
@@ -35,18 +36,47 @@ class QuadSurface : public BaseSurface {
 		ofPolyline getTextureHitArea();
 		std::vector<Vec3> getVertices();
 		std::vector<Vec2> getTexCoords();
+
+        void setBlendEdges(ofVec4f _edges);
+        ofVec4f getBlendEdges();
+        void setBlendEdge(int index, float value);
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
+        void setEdgeBlending(bool b);
+        bool getEdgeBlending();
 	
 		ofRectangle getMeshBoundingBox();
 		BaseSurface * clone();
 
 	private:
 		void calculateHomography();
+        void setupShaders();
+        void setupVertexArray();
+        void updateVertexBuffer();
+        void calculateQ();
+
 		float _matrix[16];
 		bool _perspectiveWarping;
+        bool _edgeBlending;
 		ofMesh _meshCache;
+        ofShader shader;
+        string glESVertexShader;
+        string glESFragmentShader;
+        string gl3VertexShader;
+        string gl3FragmentShader;
+        string gl2FragmentShader;
+        ofVec4f blendEdges;
+
+        GLuint VBO, VAO;
+        float q0, q1, q2, q3;
+        bool _texcoordsChanged;
+
+#ifdef TARGET_OPENGLES
+        GLint v3PosAttributeIndex;
+        GLint v3TexAttributeIndex;
+#endif
+
 };
 
 } // namespace piMapper

@@ -12,7 +12,17 @@ Application::Application(){
 	setState(PresentationMode::instance());
 	ofHideCursor();
 
+#ifdef TARGET_RASPBERRY_PI
+        ofDisableArbTex();
+#else
+        // Only use Texture2D for OpenGL3.3 or GLES2
+        if (ofIsGLProgrammableRenderer()) {
+            ofDisableArbTex();
+        }
+#endif
+
 	ofAddListener(Gui::instance()->jointPressedEvent, this, &Application::onJointPressed);
+    ofAddListener(Gui::instance()->edgeBlendJointPressedEvent, this, &Application::onEdgeBlendJointPressed);
 	ofAddListener(Gui::instance()->surfacePressedEvent, this, &Application::onSurfacePressed);
 	ofAddListener(Gui::instance()->backgroundPressedEvent, this, &Application::onBackgroundPressed);
 	ofAddListener(Gui::instance()->guiEvent, this, &Application::onGuiEvent);
@@ -143,6 +153,10 @@ void Application::onKeyPressed(ofKeyEventArgs & args){
 	 case 'f':
 		 setNextPreset();
 		 break;
+		 
+	 case 'F':
+         setFullscreenSurface();
+         break;		 
 
 	 default:
 		 // All the other keypresses are handled by the application state onKeyPressed
@@ -173,6 +187,10 @@ void Application::onMouseDragged(ofMouseEventArgs &args){
 
 void Application::onJointPressed(GuiJointEvent & e){
 	_state->onJointPressed(this, e);
+}
+
+void Application::onEdgeBlendJointPressed(GuiJointEvent & e){
+    _state->onEdgeBlendJointPressed(this, e);
 }
 
 void Application::onSurfacePressed(GuiSurfaceEvent & e){
@@ -639,6 +657,13 @@ void Application::toggleLayerPanel(){
 	if(getState() == ProjectionMappingMode::instance()){
 		ProjectionMappingMode::instance()->toggleLayerPanel();
 	}
+}
+
+void Application::setFullscreenSurface(){
+    if(getSurfaceManager()->getSelectedSurface() != 0){
+        getCmdManager()->exec(
+         new FullscreenSurfaceCmd(getSurfaceManager()->getSelectedSurface()));
+    }
 }
 
 } // namespace piMapper

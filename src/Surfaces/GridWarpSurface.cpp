@@ -37,7 +37,13 @@ void GridWarpSurface::moveBy(Vec3 v){
 	
 	setMoved(true);
 	std::vector<Vec3> vertices = Vec3::fromOf(mesh.getVertices());
-	ofNotifyEvent(verticesChangedEvent, vertices, this);
+	
+	//Redundant? Causes performance slow-down on RPI
+	//ofNotifyEvent(verticesChangedEvent, vertices, this);
+}
+
+void GridWarpSurface::fullScreen(){
+
 }
 
 int GridWarpSurface::getType(){

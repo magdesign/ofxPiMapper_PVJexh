@@ -86,7 +86,12 @@ class magSlideShowSource : public ofx::piMapper::FboSource {
 			 *
 			 * If path is relative, the root will likely be the Data folder.
 			 */
-			std::string slidesDirectoryPath = "sources/images";
+			std::string slidesFolderPath = "sources/images";
+
+			/**
+			 * If specified,
+			 */
+			std::string slideshowFilePath;
 
 
 			/**

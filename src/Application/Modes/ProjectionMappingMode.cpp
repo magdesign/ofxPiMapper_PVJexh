@@ -182,6 +182,10 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 toggleLayerPanel();
 		 break;
 
+     case 'e':
+         Gui::instance()->getProjectionEditorWidget().toggleEdgeBlendMode();
+       break;
+
 	/*
 	 case 'n': // Set next preset
 		 app->getSurfaceManager()->setNextPreset();
@@ -197,19 +201,28 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 	Gui::instance()->onMousePressed(args);
 	
 	CircleJoint * hitJoint = 0;
+    EdgeBlendJoint * hitEdgeBlendJoint = 0;
 	int hitJointIndex = -1;
 	BaseSurface * hitSurface = 0;
 
 	hitJoint = Gui::instance()->getProjectionEditorWidget().hitTestJoints(Vec2(args.x, args.y));
+    hitEdgeBlendJoint = Gui::instance()->getProjectionEditorWidget().hitTestEdgeBlendJoints(Vec2(args.x, args.y));
 	
-	if(hitJoint){
+    if(hitJoint){
 		for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
 			if((*Gui::instance()->getProjectionEditorWidget().getJoints())[i] == hitJoint){
 				hitJointIndex = i;
 				break;
 			}
 		}
-	}else{
+    }else if(hitEdgeBlendJoint) {
+        for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
+            if((*Gui::instance()->getProjectionEditorWidget().getEdgeBlendJoints())[i] == hitEdgeBlendJoint){
+                hitJointIndex = i;
+                break;
+            }
+        }
+    }else{
 		for(int i = app->getSurfaceManager()->size() - 1; i >= 0; --i){
 			if(app->getSurfaceManager()->getSurface(i)->hitTest(Vec2(args.x, args.y))){
 				hitSurface = app->getSurfaceManager()->getSurface(i);
@@ -224,6 +237,10 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 		hitJoint->select();
 		hitJoint->startDrag();
 		Gui::instance()->notifyJointPressed(args, hitJointIndex);
+    }else if(hitEdgeBlendJoint){
+        hitEdgeBlendJoint->select();
+        hitEdgeBlendJoint->startDrag();
+        Gui::instance()->notifyEdgeBlendJointPressed(args, hitJointIndex);
 	}else if(hitSurface){
 		_clickPosition = Vec2(args.x, args.y); // TODO: redesign this so we can use a kind of
 												  //       display stack.
@@ -261,6 +278,14 @@ void ProjectionMappingMode::onJointPressed(Application * app, GuiJointEvent & e)
 	app->getCmdManager()->exec(new MvSurfaceVertCmd(
 		e.jointIndex,
 		app->getSurfaceManager()->getSelectedSurface()));
+}
+
+void ProjectionMappingMode::onEdgeBlendJointPressed(Application * app, GuiJointEvent & e){
+    //app->getCmdManager()->exec(new SelEdgeBlendJointCmd(&(Gui::instance()->getProjectionEditorWidget()), e.jointIndex));
+    //cout << " selected joint: " <<  Gui::instance()->getProjectionEditorWidget().getSelectedEdgeBlendJoint() << endl;
+    app->getCmdManager()->exec(new MvSurfaceEdgeBlendJointCmd(
+        e.jointIndex,
+        &(Gui::instance()->getProjectionEditorWidget()) ));
 }
 
 void ProjectionMappingMode::onSurfacePressed(Application * app, GuiSurfaceEvent & e){

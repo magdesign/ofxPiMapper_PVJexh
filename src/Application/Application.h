@@ -22,6 +22,7 @@
 #include "MvLayerUpCmd.h"
 #include "MvLayerDnCmd.h"
 #include "DuplicateSurfaceCmd.h"
+#include "FullscreenSurfaceCmd.h"
 #include "TogglePerspectiveCmd.h"
 #include "SetNextSourceCmd.h"
 #include "ScaleSurfaceFromToCmd.h"
@@ -82,7 +83,8 @@ class Application {
 		// Then we catch GUI events with this one and create commands
 		void onJointPressed(GuiJointEvent & e);
 		void onSurfacePressed(GuiSurfaceEvent & e);
-		void onBackgroundPressed(GuiBackgroundEvent & e);
+		void onBackgroundPressed(GuiBackgroundEvent & e);        
+        void onEdgeBlendJointPressed(GuiJointEvent & e);
 
 		void onGuiEvent(GuiEvent & e);
 
@@ -129,6 +131,7 @@ class Application {
 		void scaleUp();
 		void scaleDown();
 		void duplicateSurface();
+        void setFullscreenSurface();
 		void setNextSource();
 		void setFboSource(std::string sourceId);
 		void setVideoSource(std::string fileName, bool loop);

@@ -175,8 +175,6 @@ bool magVideoSlide::setup(ofFile &file, bool useVideoDuration)
     if (success)
     {
         videoPlayer.setAnchorPercent(0.5, 0.5);
-        width = videoPlayer.getWidth();
-        height = videoPlayer.getHeight();
         if (useVideoDuration)
         {
             useVideoForDuration();
