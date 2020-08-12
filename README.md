@@ -1,3 +1,33 @@
+<<<<<<< HEAD
+=======
+Based on code from Krisjanis Rijnieks https://github.com/kr15h/ofxPiMapper<p/>
+<p/>
+Additions made by Pierre Proske https://github.com/pierrep<p/>
+<p/>
+
+Development financed by https://sehnerv.org for the exhibition https://www.facinghistory.ch/en/ <p/>
+Association for the promotion of media art, Switzerland <p/>
+Initiated by Marc-André Gasser<p/>
+
+The official fork to contibute the code back to the official repo is here:<p/>
+https://github.com/pierrep/ofxPiMapper <p/>
+
+
+
+
+# offline fork of ofxPiMapper
+to add new functions as listed here:   https://github.com/magdesign/ofxPiMapper_new_features <p/>
+made offline to be able to use the search function, when all the functions are working I will make a propper fork and open a pull request<p/>
+also the shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).<p/>
+
+## Features
+
+- Fullscreen quad is working, see branch
+- Edge blend (under consturcion, is workin on Linux machines, but not Rpi yet)
+- Sync (several RPis with ofxPiMapper will share their timecode (boradcast, no IP entering!) to run in sync
+- USB Camera feed (supporting an Elgato stick, first we test if there is enough performance, stay tuned)
+
+>>>>>>> master
 # ofxPiMapper
 
 [![Join the chat at https://gitter.im/kr15h/ofxPiMapper](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kr15h/ofxPiMapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/kr15h/ofxPiMapper.svg?branch=master)](https://travis-ci.org/kr15h/ofxPiMapper) [![Build status](https://ci.appveyor.com/api/projects/status/j6mn85tt2agk4dk6?svg=true)](https://ci.appveyor.com/project/kr15h/ofxpimapper)
