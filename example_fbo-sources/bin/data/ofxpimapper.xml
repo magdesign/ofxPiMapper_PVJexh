@@ -2,20 +2,20 @@
     <surface type="1">
         <vertices>
             <vertex>
-                <x>92.946136475</x>
-                <y>158.088775635</y>
+                <x>290.000000000</x>
+                <y>294.000000000</y>
             </vertex>
             <vertex>
-                <x>845.788269043</x>
-                <y>357.132598877</y>
+                <x>1644.000000000</x>
+                <y>84.000000000</y>
             </vertex>
             <vertex>
-                <x>733.412719727</x>
-                <y>474.649322510</y>
+                <x>1644.000000000</x>
+                <y>1064.000000000</y>
             </vertex>
             <vertex>
-                <x>92.211883545</x>
-                <y>556.910949707</y>
+                <x>246.000000000</x>
+                <y>794.000000000</y>
             </vertex>
         </vertices>
         <texCoords>
@@ -37,8 +37,8 @@
             </texCoord>
         </texCoords>
         <source>
-            <source-type>image</source-type>
-            <source-name>gene-nsynthesis-image-d.jpg</source-name>
+            <source-type>fbo</source-type>
+            <source-name>Slide Show Source</source-name>
         </source>
         <properties>
             <perspectiveWarping>1</perspectiveWarping>

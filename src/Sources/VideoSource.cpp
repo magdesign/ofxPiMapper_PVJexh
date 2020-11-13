@@ -1,4 +1,5 @@
 #include "VideoSource.h"
+#include "ofxVideoSync.h"
 
 namespace ofx {
 namespace piMapper {
@@ -25,9 +26,9 @@ void VideoSource::loadVideo(std::string & filePath){
 	
 	#ifdef TARGET_RASPBERRY_PI
 		_omxPlayer = OMXPlayerCache::instance()->load(filePath);
-		texture = &(_omxPlayer->getTextureReference());
+		texture = &(_omxPlayer->getTexture());
 	#else
-		_videoPlayer = make_unique<ofVideoPlayer>();
+        _videoPlayer = make_unique<ofxVideoSync>();
 		_videoPlayer->load(filePath);
 		_videoPlayer->setLoopState(OF_LOOP_NORMAL);
 		_videoPlayer->play();
@@ -72,7 +73,7 @@ void VideoSource::togglePause(){
     #ifdef TARGET_RASPBERRY_PI
         _omxPlayer->togglePause();
     #else
-        _videoPlayer->setPaused(!_videoPlayer->isPaused());
+        _videoPlayer->togglePause();
     #endif
 }
 
@@ -88,7 +89,7 @@ void VideoSource::stop(){
 	void VideoSource::update(ofEventArgs & args){
 		if(_videoPlayer != 0){
 			if(!_initialVolumeSet){
-				if(_videoPlayer->isInitialized()){
+                if(_videoPlayer->getVideoPlayerPtr()->isInitialized()){
 					_videoPlayer->setVolume(VideoSource::enableAudio ? 1.0f : 0.0f);
 					_initialVolumeSet = true;
 				}
@@ -98,13 +99,34 @@ void VideoSource::stop(){
 	}
 #else
 	void VideoSource::update(ofEventArgs & args){
+		if(_omxPlayer != 0){
+			_omxPlayer->update();
+		}
 		if(!_loop && _omxPlayer != 0){
-			if(_omxPlayer->getCurrentFrame() >= _omxPlayer->getTotalNumFrames() - 1){
+			if(_omxPlayer->getVideoPlayerPtr()->getCurrentFrame() >= _omxPlayer->getVideoPlayerPtr()->getTotalNumFrames() - 1){
 				_omxPlayer->setPaused(true);
 			}
 		}
 	}
 #endif
+
+void VideoSource::enableVideoSync()
+{
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->enableSync();
+#else
+    _videoPlayer->enableSync();
+#endif
+}
+
+void VideoSource::disableVideoSync()
+{
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->disableSync();
+#else
+    _videoPlayer->disableSync();
+#endif
+}
 
 } // namespace piMapper
 } // namespace ofx

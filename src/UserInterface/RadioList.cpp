@@ -6,79 +6,82 @@ namespace piMapper {
 RadioList::RadioList(){
 	storedTitle = "";
 	storedSelectedItem = 0;
-}
-
-RadioList::RadioList(std::vector<std::string> & labels, std::vector<std::string> & values){
-	RadioList();
-	setup(labels, values);
-}
-
-RadioList::RadioList(std::string title, std::vector<std::string> & labels, std::vector<std::string> & values){
-	RadioList();
-	setup(title, labels, values);
+    defaultWidth = 240;
+    defaultHeight = 18;
+    defaultSpacing = 1;
+    b.x = 0;
+    b.y = 0;
+    b.width = defaultWidth;
+    b.height = 0;
+    square_hollow.load("GUI/circle-hollow.png");
+    square_filled.load("GUI/circle-filled.png");
 }
 
 RadioList::~RadioList(){
 	clear();
 }
 
-void RadioList::setup(std::vector<std::string> & labels, std::vector<std::string> & values){
-
-	// Copy incomming labels for later use
-	storedLabels = labels;
-	storedValues = values;
-
-	// Create toggles with labels from the labels arg
-	int i;
-	for(i = 0; i < labels.size(); i++){
-		ofxToggle * toggle = new ofxToggle();
-		toggle->setup(false);
-		toggle->setName(labels[i]);
-		toggle->addListener(this, &RadioList::onToggleClicked);
-		guiGroup.add(toggle);
-		#if OF_VERSION_MAJOR == 0 && (OF_VERSION_MINOR >= 8 && OF_VERSION_PATCH >= 2) || (OF_VERSION_MINOR >= 9 && OF_VERSION_PATCH >= 0)
-			toggle->registerMouseEvents();
-		#endif
-	}
-}
-
 void RadioList::setup(std::string title, std::vector<std::string> & labels, std::vector<std::string> & values){
 
-	// Store title for later use
+    // Store for later use
 	storedTitle = title;
-	guiGroup.setName(title);
-	setup(labels, values);
+    storedLabels = labels;
+    storedValues = values;
+
+    b.height = 0;
+
+    // Create toggles with labels from the labels arg
+    for(unsigned int i = 0; i < labels.size(); i++)
+    {
+        RadioButton * toggle = new RadioButton();
+        toggle->setup(labels[i],false,defaultWidth, defaultHeight);
+        toggle->setIcons(&square_filled,&square_hollow);
+        toggle->setPosition(b.x, b.y + b.height  + defaultSpacing);
+        b.height += toggle->getHeight() + defaultSpacing;
+        toggle->addListener(this, &RadioList::onToggleClicked);
+        radioList.push_back(toggle);
+//		#if OF_VERSION_MAJOR == 0 && (OF_VERSION_MINOR >= 8 && OF_VERSION_PATCH >= 2) || (OF_VERSION_MINOR >= 9 && OF_VERSION_PATCH >= 0)
+//			toggle->registerMouseEvents();
+//		#endif
+    }
+
 }
 
 void RadioList::draw(){
-	guiGroup.draw();
-}
-
-void RadioList::setTitle(std::string title){
-	storedTitle = title;
-	guiGroup.setName(title);
+    for(unsigned int i = 0; i < radioList.size(); i++)
+    {
+        radioList.at(i)->draw();
+    }
 }
 
 void RadioList::setPosition(ofPoint p){
-	guiGroup.setPosition(p);
+
+    auto diff = p - b.getPosition();
+
+    for(std::size_t i = 0; i < radioList.size(); i++){
+        radioList[i]->setPosition(radioList[i]->getPosition() + diff);
+    }
+
+    b.setPosition(p);
+
 }
 
-void RadioList::setPosition(float x, float y){
-	guiGroup.setPosition(x, y);
+void RadioList::setInitialPosition(float x, float y){
+    b.x = x;
+    b.y = y;
 }
 
-void RadioList::selectItem(int index){
-	if(index >= guiGroup.getNumControls()){
-		return;
-	}
+void RadioList::selectItem(unsigned int index){
+    if(index >= radioList.size()){
+        return;
+    }
 
 	unselectAll();
 
-	ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(index));
-	toggle->removeListener(this, &RadioList::onToggleClicked);
-	*toggle = true;          // Select the specific radio button
-	toggle->addListener(this, &RadioList::onToggleClicked);
-	//std::string name = toggle->getName();
+    radioList[index]->removeListener(this, &RadioList::onToggleClicked);
+    *(radioList[index]) = true;          // Select the specific radio button
+    radioList[index]->addListener(this, &RadioList::onToggleClicked);
+
 	// Throw event with value that is image path instead of name
 	std::string value = storedValues[index];
 	ofNotifyEvent(onRadioSelected, value, this);
@@ -91,39 +94,33 @@ bool RadioList::selectItemByValue(std::string itemValue){
 		return false;
 	}
 	unselectAll();
-	int itemIndex = -1;
-	for(int i = 0; i < storedValues.size(); i++){
+
+    for(unsigned int i = 0; i < storedValues.size(); i++){
 		if(itemValue == storedValues[i]){
-			itemIndex = i;
-			break;
+            radioList[i]->removeListener(this, &RadioList::onToggleClicked);
+            *(radioList[i]) = true;          // Select the specific radio button
+            radioList[i]->addListener(this, &RadioList::onToggleClicked);
+            return true;
 		}
 	}
-	if(itemIndex >= 0){
-		ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(itemIndex));
-		toggle->removeListener(this, &RadioList::onToggleClicked);
-		*toggle = true;          // Select the specific radio button
-		toggle->addListener(this, &RadioList::onToggleClicked);
-		return true;
-	}
-	ofLogNotice("RadioList") << "Item with value " << itemValue << " not found";
+
+    ofLogWarning("RadioList") << "Item with value " << itemValue << " not found";
 	return false;
 }
 
 void RadioList::enable(){
-	if(guiGroup.getNumControls() > 0){
-		clear();
-	}
+    if(radioList.size() > 0){
+        clear();
+    }
 
 	// Rebuild everyting
 	setup(storedTitle, storedLabels, storedValues);
 
 	// Select the stored selected item without throwing an event
-	ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(storedSelectedItem));
-	toggle->removeListener(this, &RadioList::onToggleClicked);
-	*toggle = true;
-	toggle->addListener(this, &RadioList::onToggleClicked);
+    radioList[storedSelectedItem]->removeListener(this, &RadioList::onToggleClicked);
+    *(radioList[storedSelectedItem]) = true;
+    radioList[storedSelectedItem]->addListener(this, &RadioList::onToggleClicked);
 
-	std::cout << "num items after enable: " << guiGroup.getNumControls() << std::endl;
 }
 
 void RadioList::disable(){
@@ -132,68 +129,43 @@ void RadioList::disable(){
 }
 
 void RadioList::clear(){
-	int i;
-	for(i = 0; i < guiGroup.getNumControls(); i++){
-		ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(i));
-		toggle->removeListener(this, &RadioList::onToggleClicked);
-		delete toggle;
-	}
-	guiGroup.clear();
+    for(unsigned int i = 0; i < radioList.size(); i++) {
+        radioList[i]->removeListener(this, &RadioList::onToggleClicked);
+        delete radioList[i];
+    }
+    radioList.clear();
 }
 
 void RadioList::unselectAll(){
-	int i;
-	for(i = 0; i < guiGroup.getNumControls(); i++){
-		ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(i));
-		toggle->removeListener(this, &RadioList::onToggleClicked);
-		*toggle = false;
-		toggle->addListener(this, &RadioList::onToggleClicked);
-	}
+
+    for(unsigned int i = 0; i < radioList.size(); i++) {
+        radioList[i]->removeListener(this, &RadioList::onToggleClicked);
+        *(radioList[i]) = false;
+        radioList[i]->addListener(this, &RadioList::onToggleClicked);
+    }
 }
 
 ofPoint RadioList::getPosition(){
-	return guiGroup.getPosition();
-}
 
-float RadioList::getWidth(){
-	return guiGroup.getWidth();
-}
-
-float RadioList::getHeight(){
-	return guiGroup.getHeight();
-}
-
-std::string RadioList::getTitle(){
-	return guiGroup.getName();
-}
-
-std::string RadioList::getItemName(int index){
-	if(index >= guiGroup.getNumControls()){
-		return "";
-	}
-
-	ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(index));
-	return toggle->getName();
+    return ofPoint(b.x,b.y);
 }
 
 int RadioList::size(){
-	return storedValues.size();
+    return storedValues.size();
 }
 
 void RadioList::onToggleClicked(bool & toggleValue){
 	unselectAll();
 
 	// Search for the actual toggle triggering the event
-	int i;
-	for(i = 0; i < guiGroup.getNumControls(); i++){
-		ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(i));
-		ofParameter <bool> * paramPtr = static_cast <ofParameter <bool> *>(&toggle->getParameter());
+    for(unsigned int i = 0; i < radioList.size(); i++) {
+        ofParameter <bool> * paramPtr = static_cast <ofParameter <bool> *>(&radioList[i]->getParameter());
 
-		if(&(paramPtr->get()) == &toggleValue){
-			selectItem(i);
-			break;
-		}
-	}
+        if(&(paramPtr->get()) == &toggleValue){
+            selectItem(i);
+            break;
+        }
+    }
 }
 
 } // namespace piMapper

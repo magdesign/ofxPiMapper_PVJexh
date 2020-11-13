@@ -114,14 +114,20 @@ namespace piMapper {
 				bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
 				ofEnableNormalizedTexCoords();
 
-				shader.begin();
-				shader.setUniformTexture("tex", *(source->getTexture()), 0);
-                shader.setUniform1i("edgeBlend", _edgeBlending ? 1 : 0);
-				shader.setUniform1i("w", 1);
-				shader.setUniform1i("h", 1);
-                shader.setUniform4f("edges", blendEdges.x, blendEdges.y, blendEdges.z, blendEdges.w);
-				shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
-
+                if(_edgeBlending) {
+                    shader_blend.begin();
+                    shader_blend.setUniformTexture("tex", *(source->getTexture()), 0);
+                    // RPI optimisations to avoid branching and division
+                    float e1; (blendEdges.x <= 0.0f)? (e1 = 1.0f/0.00000001f) : e1 = 1.0f/blendEdges.x;
+                    float e2; (blendEdges.y <= 0.0f)? (e2 = 1.0f/0.00000001f) : e2 = 1.0f/blendEdges.y;
+                    float e3; (blendEdges.z <= 0.0f)? (e3 = 1.0f/0.00000001f) : e3 = 1.0f/blendEdges.z;
+                    float e4; (blendEdges.w <= 0.0f)? (e4 = 1.0f/0.00000001f) : e4 = 1.0f/blendEdges.w;
+                    shader_blend.setUniform4f("edges", e1,e2,e3,e4);
+                    shader_blend.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
+                } else {
+                    shader.begin();
+                    shader.setUniformTexture("tex", *(source->getTexture()), 0);
+                }
 				glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 				glEnableVertexAttribArray(v3PosAttributeIndex);
@@ -136,7 +142,11 @@ namespace piMapper {
 				glDisableVertexAttribArray(v3TexAttributeIndex);
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-				shader.end();
+                if(_edgeBlending) {
+                    shader_blend.end();
+                } else {
+                    shader.end();
+                }
 
 				if (!normalizedTexCoords) {
 					ofDisableNormalizedTexCoords();
@@ -565,21 +575,32 @@ namespace piMapper {
             uniform sampler2D tex;
             varying vec3 texCoordVarying;
 
+            void main() {
+                vec2 uv = texCoordVarying.xy / texCoordVarying.z;
+                vec4 col = texture2D(tex, uv);
+
+                // set final color
+                gl_FragColor = col;
+            });
+
+        glESFragmentShaderBlend = STRINGIFY(
+            precision highp float;
+
+            uniform sampler2D tex;
+            varying vec3 texCoordVarying;
+
             // used in a few inversions
             const vec3 one = vec3(1.0);
 
             // controls the interpolation curve ([1..n], 1.0 = linear, 2.0 = default quadratic)
-            uniform float exponent; // try: 2.0;
+            const float exponent = 1.0;
             // controls the center of interpolation ([0..1], 0.5 = linear)
-            uniform vec3 luminance; // try: vec3(0.5);
+            const vec3 luminance = vec3(0.5); // try: vec3(0.5);
             // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
-            uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
+            const vec3 gamma = vec3(1.8, 1.8, 1.8);
             // controls blending area at top, right, bottom and left in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
             uniform vec4 texoffset;
-            uniform int w;
-            uniform int h;
-            uniform bool edgeBlend;
 
             void main() {
                 vec2 uv = texCoordVarying.xy / texCoordVarying.z;
@@ -588,27 +609,20 @@ namespace piMapper {
                 vec3 blend = vec3(1.0, 1.0, 1.0);
 
                 // calculate edge blending factor
-                if (edgeBlend) {
-                    float a = 1.0;
-                    if (edges.w > 0.0)
-                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.w, 0.0, 1.0);
-                    if (edges.x > 0.0)
-                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.x, 0.0, 1.0);
-                    if (edges.y > 0.0)
-                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.y, 0.0, 1.0);
-                    if (edges.z > 0.0)
-                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.z, 0.0, 1.0);
+                float a = 1.0;
+                a *= clamp((uv.x - texoffset.x) * edges.w, 0.0, 1.0);
+                a *= clamp((uv.y - texoffset.y) * edges.x, 0.0, 1.0);
+                a *= clamp((1.0 - (uv.x) - (1.0 - texoffset.z)) * edges.y, 0.0, 1.0);
+                a *= clamp((1.0 - (uv.y) - (1.0 - texoffset.w)) * edges.z, 0.0, 1.0);
 
-                    // blend function with luminance control (for each of the 3 channels)
-                    blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
-                                      : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
+                // blend function with luminance control (for each of the 3 channels)
+                blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent)) : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
 
-                    // gamma correction (for each of the 3 channels)
-                    blend = pow(blend, one / gamma);
-                }
+                // gamma correction (for each of the 3 channels)
+                blend = pow(blend, one / gamma);
 
                 // set final color
-                gl_FragColor = vec4(col.rgb * blend, col.a * 1.0);
+                gl_FragColor = vec4(col.rgb * blend, col.a);
             });
 
         gl3VertexShader = "#version 330\n";
@@ -725,18 +739,20 @@ namespace piMapper {
 
 #ifdef TARGET_OPENGLES
 		if(ofIsGLProgrammableRenderer()) {
-			ofLogNotice() << "Setting up GLES2 shader for QuadSurface";
+			ofLogVerbose() << "Setting up GLES2 shader for QuadSurface";
 			shader.setupShaderFromSource(GL_VERTEX_SHADER, glESVertexShader);
 			shader.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShader);
 			shader.linkProgram();
-			shader.begin();
-			shader.setUniform1f("exponent", 1.0f);
-			shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
-			shader.setUniform3f("gamma", 1.8, 1.8, 1.8);
-			shader.end();
 
 			v3PosAttributeIndex = glGetAttribLocation(shader.getProgram(), "position");
 			v3TexAttributeIndex = glGetAttribLocation(shader.getProgram(), "texcoord");
+            
+			shader_blend.setupShaderFromSource(GL_VERTEX_SHADER, glESVertexShader);
+			shader_blend.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShaderBlend);
+			shader_blend.linkProgram();
+
+			v3PosAttributeIndex = glGetAttribLocation(shader_blend.getProgram(), "position");
+			v3TexAttributeIndex = glGetAttribLocation(shader_blend.getProgram(), "texcoord");            
 		}
 #else
         if (ofIsGLProgrammableRenderer()) {

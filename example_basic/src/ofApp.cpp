@@ -6,14 +6,14 @@ void ofApp::setup(){
 
     #ifdef TARGET_RASPBERRY_PI
         ofSetFullscreen(true);
-    #endif
+    #endif    
 }
 
 void ofApp::update(){
     mapper.update();
 }
 
-void ofApp::draw(){    
+void ofApp::draw(){    	
 	mapper.draw();
 }
 

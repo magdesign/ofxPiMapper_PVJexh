@@ -2,6 +2,10 @@
 
 #ifdef TARGET_RASPBERRY_PI
 
+#include "ofxOMXPlayer.h"
+#include "ofxVideoSync.h"
+#include "VideoSource.h"
+
 namespace ofx {
 namespace piMapper {
 
@@ -14,7 +18,7 @@ OMXPlayerCache * OMXPlayerCache::instance(){
 	return _instance;
 }
 
-ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
+ofxVideoSync * OMXPlayerCache::load(std::string moviePath){
 	if(_players.find(moviePath) == _players.end()){
 		ofxOMXPlayerSettings settings;
 		settings.videoPath = moviePath;
@@ -23,14 +27,15 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
 		
-		ofxOMXPlayer * p = new ofxOMXPlayer();
-		p->setup(settings);
-		_players[moviePath] = p;
+        ofxVideoSync * p = new ofxVideoSync();
+        p->setPlayerSettings(settings);
+		p->load(moviePath);
+		_players[moviePath] = p;		
 		
 		return p;
 	}
 	
-	_players[moviePath]->restartMovie();
+	_players[moviePath]->getVideoPlayerPtr()->restartMovie();
 	return _players[moviePath];
 }
 

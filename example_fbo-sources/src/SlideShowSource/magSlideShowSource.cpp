@@ -46,17 +46,17 @@ bool magSlideShowSource::initialize(magSlideShowSource::Settings settings) {
 	// Allocate the FBO:
 	allocate(settings.width, settings.height);
 
-	// If there is a path in slidesFolderPath, attempt
+	// If there is a path in slidesDirectoryPath, attempt
 	// to load the folder and any files in it:
-	if (!settings.slidesFolderPath.empty())
+	if (!settings.slidesDirectoryPath.empty())
 	{
-//        ofDirectory dir = ofDirectory(settings.slidesFolderPath);
-		success = createFromFolderContents(settings.slidesFolderPath);
+//        ofDirectory dir = ofDirectory(settings.slidesDirectoryPath);
+		success = createFromFolderContents(settings.slidesDirectoryPath);
 
 		if (!success)
 		{
 			ofLogError("magSlideShowSource::initialize") << "Failed to create slide show from folder "
-														 << settings.slidesFolderPath;
+														 << settings.slidesDirectoryPath;
 			return success;
 		}
 		{
@@ -64,7 +64,7 @@ bool magSlideShowSource::initialize(magSlideShowSource::Settings settings) {
 			{
 
 				using namespace ofx::piMapper;
-				directoryWatcher = new DirectoryWatcher(settings.slidesFolderPath,
+				directoryWatcher = new DirectoryWatcher(settings.slidesDirectoryPath,
 														SourceTypeHelper::GetSourceTypeHelperEnum(
 																SOURCE_TYPE_NAME_IMAGE));
 				ofAddListener(directoryWatcher->directoryFileAddedEvent, this, &magSlideShowSource::fileAddedListener);
@@ -74,10 +74,6 @@ bool magSlideShowSource::initialize(magSlideShowSource::Settings settings) {
 			}
 		}
 
-	}
-	else if (!settings.slideshowFilePath.empty())
-	{
-		success = false;
 	}
 
 	return success;
@@ -179,7 +175,8 @@ bool magSlideShowSource::createFromFolderContents(std::string path) {
 
 	ofImage tempImage;
 	for(ofFile &file : files){
-		if (tempImage.load(file.getFileName())){
+		ofLogWarning("magSlideShowSource") << "Loading as image: " << file.getAbsolutePath();
+		if (tempImage.load(file.getAbsolutePath())){
 			
 			// make a new image slide
 			auto slide = std::make_shared<magImageSlide>();
@@ -189,6 +186,8 @@ bool magSlideShowSource::createFromFolderContents(std::string path) {
 //            if (settings.transitionName == "")
 			addSlide(slide);
 		}else{
+			ofLogWarning("magSlideShowSource") << "File failed to load " << file.getAbsolutePath() << " as image. Trying as video";
+
 			auto ext = ofToLower(file.getExtension());
 
 			static std::vector<std::string> movieExtensions = {
@@ -217,6 +216,8 @@ bool magSlideShowSource::createFromFolderContents(std::string path) {
 				{
 					ofLogError("magSlideShowSource") << "Failed loading video: " << file.getAbsolutePath();
 				}
+			} else {
+				ofLogError("magSlideShowSource") << "Failed to load file " << file.getAbsolutePath();
 			}
 
 		}
@@ -228,6 +229,7 @@ bool magSlideShowSource::createFromFolderContents(std::string path) {
 	}
 	else
 	{
+		ofLogError("magSlideShowSource") << "No images or videos found at " << dir.getAbsolutePath() << ". No slides created";
 		return false;
 	}
 }
@@ -251,6 +253,7 @@ bool magSlideShowSource::loadFromXml(std::string path) {
 
 	settings.width = xml.getValue("Width", settings.width);
 	settings.height = xml.getValue("Height", settings.height);
+	settings.slidesDirectoryPath = xml.getValue("SlidesDirectoryPath", settings.slidesDirectoryPath);
 
 	// Default slide duration:
 	settings.slideDuration = xml.getValue("SlideDuration", settings.slideDuration);
