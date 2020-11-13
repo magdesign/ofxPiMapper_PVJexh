@@ -28,10 +28,10 @@ Removed unused examples.
 
 ## Good to know
 
-Change the audio volume in: ofxOMXPlayer/src/ofxOMXPlayerSettings.h => initialVolume from 0.3 to 0.5 <p/>
+Change the audio volume in: `ofxOMXPlayer/src/ofxOMXPlayerSettings.h => initialVolume from 0.3 to 0.5 `<p/>
 before compiling! <p/>
 
-To enable hdmi audio, change in: ofxPiMapper/src/Sources/VideoSource.cpp => bool VideoSource::enableAudio = true; and bool VideoSource::useHDMIForAudio = true;
+To enable hdmi audio, change in: `ofxPiMapper/src/Sources/VideoSource.cpp` => `bool VideoSource::enableAudio = true; and bool VideoSource::useHDMIForAudio = true;`
 
 
 # ofxPiMapper
