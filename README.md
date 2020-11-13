@@ -1,5 +1,5 @@
 # offline fork of ofxPiMapper
-This is for my own backup purpose <p/>
+This is for my own backup purpose and to be able to use the search function. <p/>
 
 original by: https://github.com/kr15h/ofxPiMapper <p/>
 additions added on request by: https://github.com/pierrep/ofxPiMapper <p/>
@@ -10,9 +10,10 @@ https://github.com/pierrep/ofxOMXPlayer <p/>
  <p/> 
  <p/>
  
-## Development in this fork is generously supported by:
+## Development of this fork is generously supported by:
 
 [SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst
+
 
 
 The shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).<p/>
