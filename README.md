@@ -7,8 +7,10 @@ additions added on request by: https://github.com/pierrep/ofxPiMapper <p/>
 relies on: <p/>
 https://github.com/pierrep/ofxVideoSync <p/>
 https://github.com/pierrep/ofxOMXPlayer <p/>
-
-Development in this fork is generously supported by:
+ <p/> 
+ <p/>
+ 
+## Development in this fork is generously supported by:
 
 [SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst
 
