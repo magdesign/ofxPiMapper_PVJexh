@@ -1,5 +1,5 @@
 # offline fork of ofxPiMapper
-This is for my own backup purpose <p/>
+This is for my own backup purpose and to be able to use the search function. <p/>
 
 original by: https://github.com/kr15h/ofxPiMapper <p/>
 additions added on request by: https://github.com/pierrep/ofxPiMapper <p/>
@@ -7,10 +7,13 @@ additions added on request by: https://github.com/pierrep/ofxPiMapper <p/>
 relies on: <p/>
 https://github.com/pierrep/ofxVideoSync <p/>
 https://github.com/pierrep/ofxOMXPlayer <p/>
-
-Development in this fork is generously supported by:
+ <p/> 
+ <p/>
+ 
+## Development of this fork is generously supported by:
 
 [SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst
+
 
 
 The shortcuts are changed to fit PocketVJ Exhibition Control Panel (had to do this because there where some special characters which could not be sent remotely).<p/>
@@ -25,10 +28,10 @@ Removed unused examples.
 
 ## Good to know
 
-Change the audio volume in: ofxOMXPlayer/src/ofxOMXPlayerSettings.h => initialVolume from 0.3 to 0.5 <p/>
+Change the audio volume in: `ofxOMXPlayer/src/ofxOMXPlayerSettings.h => initialVolume from 0.3 to 0.5 `<p/>
 before compiling! <p/>
 
-To enable hdmi audio, change in: ofxPiMapper/src/Sources/VideoSource.cpp => bool VideoSource::enableAudio = true; and bool VideoSource::useHDMIForAudio = true;
+To enable hdmi audio, change in: `ofxPiMapper/src/Sources/VideoSource.cpp` => `bool VideoSource::enableAudio = true; and bool VideoSource::useHDMIForAudio = true;`
 
 
 # ofxPiMapper
