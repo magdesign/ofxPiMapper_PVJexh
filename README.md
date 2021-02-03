@@ -26,6 +26,10 @@ Removed unused examples.
 - Edge blend 
 - Sync
 
+## next features which might be requested when there is a sponsor available:
+
+- Bezier warp (https://github.com/dasoe/ofxBezierWarp and https://github.com/TsubokuLab/ofxBezierWarpManager)
+
 ## Good to know
 
 Change the audio volume in: `ofxOMXPlayer/src/ofxOMXPlayerSettings.h => initialVolume from 0.3 to 0.5 `<p/>
